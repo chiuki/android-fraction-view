@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class FractionView extends View {
@@ -87,5 +90,56 @@ public class FractionView extends View {
 
     // Request a redraw
     invalidate();
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    if (event.getAction() != MotionEvent.ACTION_UP) {
+      return true;
+    }
+
+    int width = getWidth() - getPaddingLeft() - getPaddingRight();
+    int height = getHeight() - getPaddingTop() - getPaddingBottom();
+    int size = Math.min(width, height);
+    int cx = width / 2 + getPaddingLeft();
+    int cy = height / 2 + getPaddingTop();
+    int radius = size / 2;
+
+    // Reject touch events outside of the circle
+    float dx = event.getX() - cx;
+    float dy = event.getY() - cy;
+    if (dx * dx + dy * dy > radius * radius) {
+      return true;
+    }
+
+    // Increment the numerator, cycling back to 0 when we have filled the
+    // whole circle.
+    int numerator = mNumerator + 1;
+    if (numerator > mDenominator) {
+      numerator = 0;
+    }
+    setFraction(numerator, mDenominator);
+
+    return true;
+  }
+
+  public Parcelable onSaveInstanceState() {
+    Bundle bundle = new Bundle();
+    bundle.putParcelable("superState", super.onSaveInstanceState());
+    bundle.putInt("numerator", mNumerator);
+    bundle.putInt("denominator", mDenominator);
+    return bundle;
+  }
+
+  public void onRestoreInstanceState(Parcelable state) {
+    if (state instanceof Bundle) {
+      Bundle bundle = (Bundle) state;
+      mNumerator = bundle.getInt("numerator");
+      mDenominator = bundle.getInt("denominator");
+      super.onRestoreInstanceState(bundle.getParcelable("superState"));
+    } else {
+      super.onRestoreInstanceState(state);
+    }
+    setFraction(mNumerator, mDenominator);
   }
 }
