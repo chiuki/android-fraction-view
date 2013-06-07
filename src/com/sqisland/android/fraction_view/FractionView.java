@@ -20,6 +20,8 @@ public class FractionView extends View {
   private int mNumerator = 1;
   private int mDenominator = 5;
 
+  private OnChangeListener mListener = null;
+
   public FractionView(Context context) {
     super(context);
     init();
@@ -51,8 +53,6 @@ public class FractionView extends View {
 
   @Override
   protected void onDraw(Canvas canvas) {
-    setBackgroundColor(Color.LTGRAY);
-
     int width = getWidth() - getPaddingLeft() - getPaddingRight();
     int height = getHeight() - getPaddingTop() - getPaddingBottom();
     int size = Math.min(width, height);
@@ -90,6 +90,10 @@ public class FractionView extends View {
 
     // Request a redraw
     invalidate();
+
+    if (mListener != null) {
+      mListener.onChange(numerator, denominator);
+    }
   }
 
   @Override
@@ -141,5 +145,13 @@ public class FractionView extends View {
       super.onRestoreInstanceState(state);
     }
     setFraction(mNumerator, mDenominator);
+  }
+
+  public void setOnChangeListener(OnChangeListener listener) {
+    mListener = listener;
+  }
+
+  public interface OnChangeListener {
+    public void onChange(int numerator, int denominator);
   }
 }

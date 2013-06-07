@@ -2,9 +2,17 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:gravity="center_horizontal"
-  android:orientation="vertical" >
+  android:orientation="vertical"
+  android:padding="@dimen/default_margin" >
   <com.sqisland.android.fraction_view.FractionView
     android:id="@+id/fraction"
     android:layout_width="180dp"
-    android:layout_height="120dp" />
+    android:layout_height="180dp" />
+  <TextView
+    android:id="@+id/text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/default_margin"
+    android:textIsSelectable="false"
+    android:textSize="32sp" />
 </LinearLayout>
