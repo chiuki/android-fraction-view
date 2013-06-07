@@ -70,4 +70,22 @@ public class FractionView extends View {
   private float getSweepAngle() {
     return mNumerator * 360f / mDenominator;
   }
+
+  public void setFraction(int numerator, int denominator) {
+    if (numerator < 0) {
+      return;
+    }
+    if (denominator <= 0) {
+      return;
+    }
+    if (numerator > denominator) {
+      return;
+    }
+
+    mNumerator = numerator;
+    mDenominator = denominator;
+
+    // Request a redraw
+    invalidate();
+  }
 }
