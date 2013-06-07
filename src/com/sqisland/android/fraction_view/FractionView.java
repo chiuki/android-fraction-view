@@ -4,11 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class FractionView extends View {
   private Paint mCirclePaint;
+  private Paint mSectorPaint;
+
+  private RectF mSectorOval;
+
+  private int mNumerator = 1;
+  private int mDenominator = 5;
 
   public FractionView(Context context) {
     super(context);
@@ -31,6 +38,12 @@ public class FractionView extends View {
     mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     mCirclePaint.setColor(Color.CYAN);
     mCirclePaint.setStyle(Paint.Style.FILL);
+
+    mSectorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    mSectorPaint.setColor(Color.BLUE);
+    mSectorPaint.setStyle(Paint.Style.FILL);
+
+    mSectorOval = new RectF();
   }
 
   @Override
@@ -45,5 +58,16 @@ public class FractionView extends View {
     int radius = size / 2;
 
     canvas.drawCircle(cx, cy, radius, mCirclePaint);
+
+    mSectorOval.top = (height - size) / 2 + getPaddingTop();
+    mSectorOval.left = (width - size) / 2 + getPaddingLeft();
+    mSectorOval.bottom = mSectorOval.top + size;
+    mSectorOval.right = mSectorOval.left + size;
+
+    canvas.drawArc(mSectorOval, 0, getSweepAngle(), true, mSectorPaint);
+  }
+
+  private float getSweepAngle() {
+    return mNumerator * 360f / mDenominator;
   }
 }
